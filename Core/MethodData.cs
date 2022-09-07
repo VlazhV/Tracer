@@ -31,6 +31,7 @@ namespace Core
 
 		public MethodData(string methodName, string className){
 			_methodName = methodName;
+
 			_className = className;
 			
 		}
