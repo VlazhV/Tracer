@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-	internal class Tracer : ITracer
+	public class Tracer : ITracer
 	{
 		private bool _isRunning = false;
 		private Dictionary<int, List<MethodData>>_tempMethodInfo = new();
@@ -20,7 +20,12 @@ namespace Core
 
 		public TraceResult Result()
 		{
-			throw new NotImplementedException();
+			if ( !_isRunning )
+			{
+				TraceResult traceResult = new( _tempMethodInfo );
+				return traceResult;
+			}
+			throw new Exception();
 		}
 
 		

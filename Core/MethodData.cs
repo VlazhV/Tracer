@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-	internal class MethodData
+	public class MethodData
 	{
 		string _methodName;
 		string _className;

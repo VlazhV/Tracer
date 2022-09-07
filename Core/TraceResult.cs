@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-	internal class TraceResult
+	public class TraceResult
 	{
 		//IReadOnlyList<MethodData> _traceInfo;
 		IReadOnlyDictionary<int, List<MethodData>> _traceInfo;
