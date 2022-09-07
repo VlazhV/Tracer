@@ -13,5 +13,11 @@ namespace Core
 		string _className;
 		long _timeMs;
 
+		public MethodData(string methodName, string className, long timeMs){
+			_methodName = methodName;
+			_className = className;
+			_timeMs = timeMs;
+		}
+
 	}
 }

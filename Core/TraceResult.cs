@@ -9,8 +9,8 @@ namespace Core
 	internal class TraceResult
 	{
 		//IReadOnlyList<MethodData> _traceInfo;
-		IReadOnlyDictionary<string, MethodData> _traceInfo;
-		public TraceResult( Dictionary<string, MethodData> traceInfo )
+		IReadOnlyDictionary<int, List<MethodData>> _traceInfo;
+		public TraceResult( Dictionary<int, List<MethodData>> traceInfo )
 		{
 			_traceInfo = traceInfo;
 		}

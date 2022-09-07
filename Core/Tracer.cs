@@ -9,8 +9,8 @@ namespace Core
 {
 	internal class Tracer : ITracer
 	{
-		private bool _isRunning;
-		private Dictionary<string, MethodData>_methodInfo;
+		private bool _isRunning = false;
+		private Dictionary<int, List<MethodData>>_tempMethodInfo = new();
 
 		public TraceResult Result()
 		{
@@ -19,8 +19,9 @@ namespace Core
 
 		public void Start()
 		{
-			//throw new NotImplementedException();
-			string threadName = Thread.CurrentThread.Name;
+			if ( _isRunning ) return;
+
+			int threadId = Thread.CurrentThread.ManagedThreadId;
 
 			StackTrace stackTrace = new StackTrace();
 			
@@ -28,6 +29,9 @@ namespace Core
 			string methodName = frame.GetMethod().Name;
 			string className = frame.GetMethod().ReflectedType.Name;
 			Stopwatch stopwatch = new Stopwatch();
+			MethodData methodData = new MethodData( methodName, className, stopwatch.ElapsedMilliseconds );
+			this.AddToDictionary( threadId, methodData );
+
 			stopwatch.Start();
 			_isRunning = true;
 
@@ -35,7 +39,29 @@ namespace Core
 
 		public void Stop()
 		{
+			if (!_isRunning) return;
+
+
 			_isRunning = false;
+		}
+
+		private void  AddToDictionary(int threadId, MethodData data)
+		{
+			List<MethodData> list = new List<MethodData>();						
+			if (_tempMethodInfo.TryGetValue(threadId, out list))
+			{
+				list.Add( data );
+				_tempMethodInfo[ threadId ] = list;
+			}
+			else
+			{
+				list.Add( data );
+				_tempMethodInfo.Add( threadId, list );
+			}
+			
+			
+			
+			
 		}
 
 		
