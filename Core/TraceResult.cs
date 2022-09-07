@@ -14,5 +14,22 @@ namespace Core
 		{
 			_traceInfo = traceInfo;
 		}
+
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach(int key in _traceInfo.Keys){
+				sb.AppendLine( key.ToString() );
+				foreach ( MethodData value in _traceInfo[ key ] )
+				{
+					sb.Append( value.ClassName + " " );
+					sb.Append( value.MethodName + " " );
+					sb.Append( value.TimeMs + " " );
+				}
+
+			}
+			sb.AppendLine( "\n" );
+			return sb.ToString();
+		}
 	}
 }

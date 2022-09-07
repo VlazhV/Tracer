@@ -19,10 +19,20 @@ namespace Core
 			set { _timeMs = value; }
 		}
 
-		public MethodData(string methodName, string className, long timeMs){
+		public string MethodName
+		{
+			get { return _methodName; }			
+		}
+
+		public string ClassName
+		{
+			get { return _className; }	
+		}
+
+		public MethodData(string methodName, string className){
 			_methodName = methodName;
 			_className = className;
-			_timeMs = timeMs;
+			
 		}
 
 		public override bool Equals( object? md )

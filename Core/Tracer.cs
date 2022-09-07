@@ -34,13 +34,11 @@ namespace Core
 			if ( _isRunning ) return;
 
 			int _currentThreadId = Thread.CurrentThread.ManagedThreadId;
-			Stopwatch _stopwatch = new Stopwatch();
 
 			_currentMethodData = GetFrameInfo();
-			
 			_isRunning = true;
-			_stopwatch.Start();
-
+			_stopWatch = new Stopwatch();
+			_stopWatch.Start();
 		}
 
 		public void Stop()
@@ -52,7 +50,7 @@ namespace Core
 			var checkMethodData = GetFrameInfo();
 			var threadId = Thread.CurrentThread.ManagedThreadId;
 
-			if ( !checkMethodData.Equals( _currentMethodData ) || !(threadId != _currentThreadId)) return;
+			if ( !checkMethodData.Equals( _currentMethodData )/* || (threadId != _currentThreadId)*/) return;
 
 			_currentMethodData.TimeMs = _stopWatch.ElapsedMilliseconds;
 
@@ -63,7 +61,7 @@ namespace Core
 
 		private void  AddToDictionary(int threadId, MethodData data)
 		{
-			List<MethodData> list = new List<MethodData>();
+			List<MethodData> list;
 			if ( _tempMethodInfo.TryGetValue( threadId, out list ) )
 			{
 				list.Add( data );
@@ -71,19 +69,29 @@ namespace Core
 			}
 			else
 			{
+				list = new List<MethodData>();
 				list.Add( data );
 				_tempMethodInfo.Add( threadId, list );
 			}					
 		}
 
-		private MethodData GetFrameInfo(){
+		private MethodData GetFrameInfo()
+		{
 			StackTrace stackTrace = new StackTrace();
-			var frame = stackTrace.GetFrame( 1 );
+			var frame = stackTrace.GetFrame( 2 );
 			string methodName = frame.GetMethod().Name;
 			string className = frame.GetMethod().ReflectedType.Name;
 
-			return new MethodData( methodName, className, _stopWatch.ElapsedMilliseconds );
+			return new MethodData( methodName, className);
 		}
+
+
+		//private (string, string) GetFrameInfo()
+		//{
+		//	StackTrace stackTrace = new StackTrace();
+		//	var frame = stackTrace.GetFrame( 1 );
+		//	return (frame.GetMethod().Name, frame.GetMethod().ReflectedType.Name);
+		//}
 
 		
 	}
