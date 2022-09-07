@@ -33,7 +33,7 @@ namespace Core
 		{
 			if ( _isRunning ) return;
 
-			int _currentThreadId = Thread.CurrentThread.ManagedThreadId;
+			_currentThreadId = Thread.CurrentThread.ManagedThreadId;
 
 			_currentMethodData = GetFrameInfo();
 			_isRunning = true;
