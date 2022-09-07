@@ -11,44 +11,55 @@ namespace Core
 	{
 		private bool _isRunning = false;
 		private Dictionary<int, List<MethodData>>_tempMethodInfo = new();
+		
+		
+		private Stopwatch _stopWatch;
+		private int _currentThreadId;
+		private MethodData _currentMethodData;
+		
 
 		public TraceResult Result()
 		{
 			throw new NotImplementedException();
 		}
 
+		
 		public void Start()
 		{
 			if ( _isRunning ) return;
 
-			int threadId = Thread.CurrentThread.ManagedThreadId;
+			int _currentThreadId = Thread.CurrentThread.ManagedThreadId;
+			Stopwatch _stopwatch = new Stopwatch();
 
-			StackTrace stackTrace = new StackTrace();
+			_currentMethodData = GetFrameInfo();
 			
-			var frame = stackTrace.GetFrame(1);
-			string methodName = frame.GetMethod().Name;
-			string className = frame.GetMethod().ReflectedType.Name;
-			Stopwatch stopwatch = new Stopwatch();
-			MethodData methodData = new MethodData( methodName, className, stopwatch.ElapsedMilliseconds );
-			this.AddToDictionary( threadId, methodData );
-
-			stopwatch.Start();
 			_isRunning = true;
+			_stopwatch.Start();
 
 		}
 
 		public void Stop()
 		{
-			if (!_isRunning) return;
+			
+			if (! _isRunning) return;
+			_stopWatch.Stop();
+			
+			var checkMethodData = GetFrameInfo();
+			var threadId = Thread.CurrentThread.ManagedThreadId;
 
+			if ( !checkMethodData.Equals( _currentMethodData ) || !(threadId != _currentThreadId)) return;
+
+			_currentMethodData.TimeMs = _stopWatch.ElapsedMilliseconds;
+
+			this.AddToDictionary( _currentThreadId, _currentMethodData );
 
 			_isRunning = false;
 		}
 
 		private void  AddToDictionary(int threadId, MethodData data)
 		{
-			List<MethodData> list = new List<MethodData>();						
-			if (_tempMethodInfo.TryGetValue(threadId, out list))
+			List<MethodData> list = new List<MethodData>();
+			if ( _tempMethodInfo.TryGetValue( threadId, out list ) )
 			{
 				list.Add( data );
 				_tempMethodInfo[ threadId ] = list;
@@ -57,11 +68,16 @@ namespace Core
 			{
 				list.Add( data );
 				_tempMethodInfo.Add( threadId, list );
-			}
-			
-			
-			
-			
+			}					
+		}
+
+		private MethodData GetFrameInfo(){
+			StackTrace stackTrace = new StackTrace();
+			var frame = stackTrace.GetFrame( 1 );
+			string methodName = frame.GetMethod().Name;
+			string className = frame.GetMethod().ReflectedType.Name;
+
+			return new MethodData( methodName, className, _stopWatch.ElapsedMilliseconds );
 		}
 
 		
