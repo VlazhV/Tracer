@@ -8,6 +8,11 @@ namespace Core
 {
 	internal class TraceResult
 	{
-		IreadOnly
+		//IReadOnlyList<MethodData> _traceInfo;
+		IReadOnlyDictionary<string, MethodData> _traceInfo;
+		public TraceResult( Dictionary<string, MethodData> traceInfo )
+		{
+			_traceInfo = traceInfo;
+		}
 	}
 }
