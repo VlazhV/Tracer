@@ -50,7 +50,7 @@ namespace Core
 			var checkMethodData = GetFrameInfo();
 			var threadId = Thread.CurrentThread.ManagedThreadId;
 
-			if ( !checkMethodData.Equals( _currentMethodData )/* || (threadId != _currentThreadId)*/) return;
+			if ( !checkMethodData.Equals( _currentMethodData ) || (threadId != _currentThreadId)) return;
 
 			_currentMethodData.TimeMs = _stopWatch.ElapsedMilliseconds;
 
